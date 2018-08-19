@@ -50,10 +50,10 @@ class RobotState {
         robotVelocity.damp( nsAdapter( kFriction, timeSinceLastLoop ) );
 
         // account for wheels
-        robotVelocity = robotVelocity.add( new Vector2( (leftWheelVelocity + rightWheelVelocity) / 2, rot ) );
+        robotVelocity = robotVelocity.add( new Vector2( nsAdapter((leftWheelVelocity + rightWheelVelocity) / 2, timeSinceLastLoop), rot ) );
 
         // apply velocity to position
-        robotPos = robotPos.add(robotVelocity);
+        robotPos = robotPos.add(nsAdapter(robotVelocity, timeSinceLastLoop));
 
     }
 
