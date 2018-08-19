@@ -86,4 +86,22 @@ public class Vector2 {
             this.damp(magnitude / limit);
         }
     }
+
+    public void wrap(double minX, double maxX, double minY, double maxY) {
+        while (this.x < minX) {
+            this.x += maxX - minX;
+        }
+
+        while (this.x > maxX) {
+            this.x += minX - maxX;
+        }
+
+        while (this.y < minY) {
+            this.y += maxY - minY;
+        }
+
+        while (this.y > maxY) {
+            this.y += minY - maxY;
+        }
+    }
 }
