@@ -16,7 +16,7 @@ uploadArchives {
             repository(url: "https://amrelk.com") {
                 authentication(userName: "amrelk", password: "amrelk_pass")
             }
-            pom.version = "0.2.0.3-SNAPSHOT"
+            pom.version = "0.2.1.1-SNAPSHOT"
             pom.artifactId = "learning-simulator"
             pom.groupId = "amrelk.simulation.learning"
         }
