@@ -10,28 +10,12 @@ import java.util.jar.Manifest;
 
 
 public abstract class RobotBase {
-    // constants
-    private final double
-            kTopSpeed = 10,
-            kWheelAcceleration = 10;
-    private final long
-            kLoopPeriod = 100; // in ms
+    private long kLoopPeriod = 10;
 
-    // these variables will be output
-    private double
-            posX,
-            posY,
-            rot;
+    // the robot simulation object
+    private RobotState robotState;
 
-    // these variables are internal to the simulation
-    private double
-            leftWheelVelocity,
-            rightWheelVelocity,
-            leftWheelInput,
-            rightWheelInput;
-    private Vector2
-            robotVelocity;
-
+    // server and its port - port is set in build.gradle
     private RobotServer server;
     private int robotPort;
 
@@ -63,7 +47,7 @@ public abstract class RobotBase {
      * @param input value to send, between -1 and 1
      */
     public void setLeftWheel(double input) {
-        leftWheelInput = Math.max(Math.min(input, 1), -1);
+        robotState.leftWheelInput = Math.max(Math.min(input, 1), -1);
     }
 
     /**
@@ -72,7 +56,7 @@ public abstract class RobotBase {
      * @param input value to send, between -1 and 1
      */
     public void setRightWheel(double input) {
-        rightWheelInput = Math.max(Math.min(input, 1), -1);
+        robotState.rightWheelInput = Math.max(Math.min(input, 1), -1);
     }
 
     public void robotInit(){ System.out.println("robotInit isn't overridden!"); }
@@ -88,21 +72,15 @@ public abstract class RobotBase {
             System.out.print("IOException while making the server: ");
             ex.printStackTrace();
         }
-        posX = 0;
-        posY = 0;
-        rot = 0;
-        leftWheelInput = 0;
-        leftWheelVelocity = 0;
-        rightWheelInput = 0;
-        rightWheelVelocity = 0;
-        robotVelocity = new Vector2(0,0);
+        robotState = new RobotState();
     }
 
     private void backendPeriodic() {
-
+        // do the simulate
+        robotState.update();
         // FULL SEND
-        server.send("[" + posX + "," + posY + "," + rot + "]");
-        System.out.println("[" + posX + "," + posY + "," + rot + "]");
+        server.send("[" + robotState.robotPos.x + "," + robotState.robotPos.y + "," + robotState.rot + "]");
+        System.out.println("[" + robotState.robotPos.x + "," + robotState.robotPos.y + "," + robotState.rot + "]");
     }
 
     public static void main(String[] args) {
