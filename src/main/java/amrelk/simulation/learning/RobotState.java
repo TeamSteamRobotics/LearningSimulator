@@ -45,6 +45,12 @@ class RobotState {
 
         // determine rotation
         rot += nsAdapter( ( rightWheelVelocity - leftWheelVelocity ), timeSinceLastLoop ) * ( 2 / kWheelbase );
+        while ( rot > 2*Math.PI ) {
+            rot -= 2*Math.PI;
+        }
+        while ( rot < -2*Math.PI) {
+            rot += 2*Math.PI;
+        }
 
         // account for friction
         robotVelocity.damp( nsAdapter( kFriction, timeSinceLastLoop ) );
