@@ -57,6 +57,24 @@ public abstract class RobotBase {
         service.scheduleAtFixedRate(mainLoop, 0, kLoopPeriod, TimeUnit.MILLISECONDS);
     }
 
+    /**
+     * sets the input for the left wheel
+     *
+     * @param input value to send, between -1 and 1
+     */
+    public void setLeftWheel(double input) {
+        leftWheelInput = Math.max(Math.min(input, 1), -1);
+    }
+
+    /**
+     * sets the input for the right wheel
+     *
+     * @param input value to send, between -1 and 1
+     */
+    public void setRightWheel(double input) {
+        rightWheelInput = Math.max(Math.min(input, 1), -1);
+    }
+
     public void robotInit(){ System.out.println("robotInit isn't overridden!"); }
 
     public void robotPeriodic(){
@@ -65,7 +83,7 @@ public abstract class RobotBase {
 
     private void backendInit() {
         try {
-            server = new RobotServer(0);
+            server = new RobotServer(robotPort);
         } catch (IOException ex) {
             System.out.print("IOException while making the server: ");
             ex.printStackTrace();
@@ -81,7 +99,10 @@ public abstract class RobotBase {
     }
 
     private void backendPeriodic() {
+
+        // FULL SEND
         server.send("[" + posX + "," + posY + "," + rot + "]");
+        System.out.println("[" + posX + "," + posY + "," + rot + "]");
     }
 
     public static void main(String[] args) {
