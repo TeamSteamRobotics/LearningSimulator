@@ -10,7 +10,7 @@ import java.util.jar.Manifest;
 
 
 public abstract class RobotBase {
-    private long kLoopPeriod = 10;
+    private long kLoopPeriod = 25;
 
     // the robot simulation object
     private RobotState robotState;
@@ -79,8 +79,8 @@ public abstract class RobotBase {
         // do the simulate
         robotState.update();
         // FULL SEND
-        server.send("[" + robotState.robotPos.x + "," + robotState.robotPos.y + "," + robotState.rot + "]");
-        System.out.println("[" + robotState.robotPos.x + "," + robotState.robotPos.y + "," + robotState.rot + "]");
+        server.send(robotState.robotPos.x + "," + robotState.robotPos.y + "," + robotState.rot);
+        //System.out.println("[" + robotState.robotPos.x + "," + robotState.robotPos.y + "," + robotState.rot + "]");
     }
 
     public static void main(String[] args) {
