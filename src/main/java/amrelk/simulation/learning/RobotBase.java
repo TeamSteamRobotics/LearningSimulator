@@ -41,24 +41,6 @@ public abstract class RobotBase {
         service.scheduleAtFixedRate(mainLoop, 0, kLoopPeriod, TimeUnit.MILLISECONDS);
     }
 
-    /**
-     * sets the input for the left wheel
-     *
-     * @param input value to send, between -1 and 1
-     */
-    public void setLeftWheel(double input) {
-        robotState.leftWheelInput = Math.max(Math.min(input, 1), -1);
-    }
-
-    /**
-     * sets the input for the right wheel
-     *
-     * @param input value to send, between -1 and 1
-     */
-    public void setRightWheel(double input) {
-        robotState.rightWheelInput = Math.max(Math.min(input, 1), -1);
-    }
-
     public void robotInit(){ System.out.println("robotInit isn't overridden!"); }
 
     public void robotPeriodic(){
@@ -76,6 +58,8 @@ public abstract class RobotBase {
     }
 
     private void backendPeriodic() {
+        robotState.leftMotorInput = HAL.leftMotorInput;
+        robotState.rightMotorInput = HAL.rightMotorInput;
         // do the simulate
         robotState.update();
         // FULL SEND

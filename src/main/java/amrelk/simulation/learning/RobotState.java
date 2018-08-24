@@ -16,8 +16,8 @@ class RobotState {
             leftWheelVelocity, // U:px/s
             rightWheelVelocity; // U:px/s
     double
-            leftWheelInput, // U:arbitrary
-            rightWheelInput; // U:arbitrary
+            leftMotorInput, // U:arbitrary
+            rightMotorInput; // U:arbitrary
     private Vector2
             robotVelocity; // U:px/s
 
@@ -27,9 +27,9 @@ class RobotState {
     RobotState() {
         robotPos = new Vector2();
         rot = 0;
-        leftWheelInput = 0;
+        leftMotorInput = 0;
         leftWheelVelocity = 0;
-        rightWheelInput = 0;
+        rightMotorInput = 0;
         rightWheelVelocity = 0;
         robotVelocity = new Vector2();
         lastLoopTime = System.nanoTime();
@@ -45,8 +45,8 @@ class RobotState {
         leftWheelVelocity /= 1 + nsAdapter(kWheelFriction, timeSinceLastLoop);
 
         // apply input to wheels
-        leftWheelVelocity += leftWheelInput * nsAdapter( kBaseWheelAcceleration, timeSinceLastLoop ) * Math.max( Math.min( ( kTopWheelSpeed - Math.abs( leftWheelVelocity ) ) / kTopWheelSpeed, 1), -1 );
-        rightWheelVelocity += rightWheelInput * nsAdapter( kBaseWheelAcceleration, timeSinceLastLoop ) * Math.max( Math.min( ( kTopWheelSpeed - Math.abs( rightWheelVelocity ) ) / kTopWheelSpeed, 1), -1 );
+        leftWheelVelocity += leftMotorInput * nsAdapter( kBaseWheelAcceleration, timeSinceLastLoop ) * Math.max( Math.min( ( kTopWheelSpeed - Math.abs( leftWheelVelocity ) ) / kTopWheelSpeed, 1), -1 );
+        rightWheelVelocity += rightMotorInput * nsAdapter( kBaseWheelAcceleration, timeSinceLastLoop ) * Math.max( Math.min( ( kTopWheelSpeed - Math.abs( rightWheelVelocity ) ) / kTopWheelSpeed, 1), -1 );
 
         // determine rotation
         rot += nsAdapter( ( rightWheelVelocity - leftWheelVelocity), timeSinceLastLoop ) * ( 2 / kWheelbase );
