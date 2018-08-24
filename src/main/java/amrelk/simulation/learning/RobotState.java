@@ -3,11 +3,12 @@ package amrelk.simulation.learning;
 class RobotState {
     // constants. U:<unit>
     private final double
-            kTopWheelSpeed = 100, // U:px/s
-            kBaseWheelAcceleration = 100, // U:px/s/s
-            kRobotFriction = 1, // U:px/s/s
-            kWheelFriction = .05, // U:px/s/s
-            kWheelbase = 30; // U:px
+            kWheelbase = 30, // U:px
+            kWheelRadius = 5, // U:px
+            kTopWheelSpeed = 100, // U:deg/s
+            kBaseWheelAcceleration = 1000, // U:deg/s/s
+            kWheelFriction = 1, // U:deg/s/s
+            kRobotFriction = 10; // U:px/s/s
 
     // these variables are internal to the simulation
     Vector2 robotPos; // U:px
@@ -41,20 +42,22 @@ class RobotState {
         lastLoopTime = System.nanoTime();
 
         // apply friction to wheels
-        System.out.println(nsAdapter(kWheelFriction, timeSinceLastLoop));
         leftWheelVelocity /= 1 + nsAdapter(kWheelFriction, timeSinceLastLoop);
+        rightWheelVelocity /= 1 + nsAdapter(kWheelFriction, timeSinceLastLoop);
 
         // apply input to wheels
         leftWheelVelocity += leftMotorInput * nsAdapter( kBaseWheelAcceleration, timeSinceLastLoop ) * Math.max( Math.min( ( kTopWheelSpeed - Math.abs( leftWheelVelocity ) ) / kTopWheelSpeed, 1), -1 );
         rightWheelVelocity += rightMotorInput * nsAdapter( kBaseWheelAcceleration, timeSinceLastLoop ) * Math.max( Math.min( ( kTopWheelSpeed - Math.abs( rightWheelVelocity ) ) / kTopWheelSpeed, 1), -1 );
 
         // determine rotation
-        rot += nsAdapter( ( rightWheelVelocity - leftWheelVelocity), timeSinceLastLoop ) * ( 2 / kWheelbase );
-        while ( rot > 2*Math.PI ) {
-            rot -= 2*Math.PI;
+        HAL.addLeftEncoder(nsAdapter(leftWheelVelocity, timeSinceLastLoop));
+        HAL.addRightEncoder(nsAdapter(rightWheelVelocity, timeSinceLastLoop));
+        rot += Math.toDegrees(nsAdapter( ( ( rightWheelVelocity - leftWheelVelocity ) / 360 ) * ( 2*Math.PI * kWheelRadius), timeSinceLastLoop ) * ( 2 / kWheelbase ));
+        while ( rot > 360 ) {
+            rot -= 360;
         }
-        while ( rot < -2*Math.PI) {
-            rot += 2*Math.PI;
+        while ( rot < 0) {
+            rot += 360;
         }
 
         // account for friction
