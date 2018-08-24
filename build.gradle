@@ -1,24 +1,47 @@
 plugins {
     id 'java-library'
-    id 'maven'
+    id 'maven-publish'
 }
 
-dependencies {
-    testImplementation 'junit:junit:4.12'
-}
-repositories {
-    jcenter()
+group = 'amrelk.simulation.learning'
+version = '0.2.2.1-SNAPSHOT'
+
+task sourcesJar(type: Jar) {
+    from sourceSets.main.allJava
+    classifier = 'sources'
 }
 
-uploadArchives {
+task javadocJar(type: Jar) {
+    from javadoc
+    classifier = 'javadoc'
+}
+
+publishing {
+    publications {
+        mavenJava(MavenPublication) {
+            artifactId = 'learning-simulator'
+            from components.java
+            artifact sourcesJar
+            artifact javadocJar
+        }
+    }
     repositories {
-        mavenDeployer {
-            repository(url: "https://amrelk.com") {
-                authentication(userName: "amrelk", password: "amrelk_pass")
+        maven {
+            url = 'https://amrelk.com/'
+            credentials {
+                username = 'amrelk'
+                password = 'amrelk_pass'
             }
-            pom.version = "0.2.1.1-SNAPSHOT"
-            pom.artifactId = "learning-simulator"
-            pom.groupId = "amrelk.simulation.learning"
         }
     }
 }
+
+/* someday I will put unit tests in. today is not that day.
+dependencies {
+    testImplementation 'junit:junit:4.12'
+}
+
+repositories {
+    jcenter()
+}
+*/
