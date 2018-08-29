@@ -4,7 +4,7 @@ plugins {
 }
 
 group = 'amrelk.simulation.learning'
-version = '0.2.3.0-SNAPSHOT'
+version = '0.2.4.1-SNAPSHOT'
 
 task sourcesJar(type: Jar) {
     from sourceSets.main.allJava
@@ -27,10 +27,10 @@ publishing {
     }
     repositories {
         maven {
-            url = 'https://amrelk.com/'
+            url = 'https://amrelk.com'
             credentials {
                 username = 'amrelk'
-                password = 'amrelk_pass'
+                password = System.getProperty('password')
             }
         }
     }

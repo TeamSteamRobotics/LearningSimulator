@@ -7,7 +7,7 @@ class RobotState {
             kWheelRadius = 5, // U:px
             kTopWheelSpeed = 100, // U:deg/s
             kBaseWheelAcceleration = 1000, // U:deg/s/s
-            kWheelFriction = 1, // U:deg/s/s
+            kWheelFriction = 0.1, // U:deg/s/s
             kRobotFriction = 10; // U:px/s/s
 
     // these variables are internal to the simulation
