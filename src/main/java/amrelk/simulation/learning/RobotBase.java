@@ -37,7 +37,9 @@ public abstract class RobotBase {
     private Runnable mainLoop = new Runnable() {
         @Override
         public void run() {
-            if(server.ready()) {
+            if (counter == 0) {
+                robotLoop("0,0,disabled");
+            } else if (server.ready()) {
                 robotLoop(server.readLine());
             }
         }

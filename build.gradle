@@ -4,7 +4,7 @@ plugins {
 }
 
 group = 'amrelk.simulation.learning'
-version = '0.2.4.1-SNAPSHOT'
+version = '0.2.4.14-SNAPSHOT'
 
 task sourcesJar(type: Jar) {
     from sourceSets.main.allJava

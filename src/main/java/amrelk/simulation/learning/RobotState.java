@@ -3,11 +3,11 @@ package amrelk.simulation.learning;
 class RobotState {
     // constants. U:<unit>
     private final double
-            kWheelbase = 30, // U:px
+            kWheelbase = 20, // U:px
             kWheelRadius = 5, // U:px
-            kTopWheelSpeed = 100, // U:deg/s
-            kBaseWheelAcceleration = 1000, // U:deg/s/s
-            kWheelFriction = 0.1, // U:deg/s/s
+            kTopWheelSpeed = 1000, // U:px/s
+            kBaseWheelAcceleration = 2500, // U:px/s/s
+            kWheelFriction = 1, // U:px/s/s
             kRobotFriction = 10; // U:px/s/s
 
     // these variables are internal to the simulation
@@ -48,16 +48,17 @@ class RobotState {
         // apply input to wheels
         leftWheelVelocity += leftMotorInput * nsAdapter( kBaseWheelAcceleration, timeSinceLastLoop ) * Math.max( Math.min( ( kTopWheelSpeed - Math.abs( leftWheelVelocity ) ) / kTopWheelSpeed, 1), -1 );
         rightWheelVelocity += rightMotorInput * nsAdapter( kBaseWheelAcceleration, timeSinceLastLoop ) * Math.max( Math.min( ( kTopWheelSpeed - Math.abs( rightWheelVelocity ) ) / kTopWheelSpeed, 1), -1 );
+        System.out.println(leftWheelVelocity + "\t|\t" + rightWheelVelocity);
 
         // determine rotation
-        HAL.addLeftEncoder(nsAdapter(leftWheelVelocity, timeSinceLastLoop));
-        HAL.addRightEncoder(nsAdapter(rightWheelVelocity, timeSinceLastLoop));
-        rot += Math.toDegrees(nsAdapter( ( ( rightWheelVelocity - leftWheelVelocity ) / 360 ) * ( 2*Math.PI * kWheelRadius), timeSinceLastLoop ) * ( 2 / kWheelbase ));
-        while ( rot > 360 ) {
-            rot -= 360;
+        HAL.addLeftEncoder( nsAdapter( leftWheelVelocity, timeSinceLastLoop ) );
+        HAL.addRightEncoder( nsAdapter( rightWheelVelocity, timeSinceLastLoop ) );
+        rot += nsAdapter( leftWheelVelocity - rightWheelVelocity, timeSinceLastLoop ) * ( 2 / kWheelbase );
+        while ( rot > 2*Math.PI ) {
+            rot -= 2*Math.PI;
         }
-        while ( rot < 0) {
-            rot += 360;
+        while ( rot < -2*Math.PI) {
+            rot += 2*Math.PI;
         }
 
         // account for friction
@@ -67,17 +68,17 @@ class RobotState {
         robotVelocity = robotVelocity.add( new Vector2( nsAdapter((leftWheelVelocity + rightWheelVelocity) / 2, timeSinceLastLoop), rot ) );
 
         // apply velocity to position
-        robotPos = robotPos.add(nsAdapter(robotVelocity, timeSinceLastLoop));
+        robotPos = robotPos.add( nsAdapter( robotVelocity, timeSinceLastLoop ) );
 
         //keep it on the screen
-        robotPos.wrap(0, 1920, 0, 1080);
+        robotPos.wrap( 0, 1920, 0, 1080 );
 
     }
 
     static double nsAdapter( double unitWithSeconds, long nanoseconds ) {
-        return unitWithSeconds * (nanoseconds / 1e9);
+        return unitWithSeconds * ( nanoseconds / 1e9 );
     }
     static Vector2 nsAdapter( Vector2 unitWithSeconds, long nanoseconds ) {
-        return unitWithSeconds.mult(nanoseconds / 1e9);
+        return unitWithSeconds.mult( nanoseconds / 1e9 );
     }
 }
